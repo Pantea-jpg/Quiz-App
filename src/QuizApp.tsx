@@ -18,17 +18,24 @@ const QuizApp = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(
-        `https://opentdb.com/api.php?amount=${numberOfQuestions}`,
-      );
+      const response = await fetch("https://opentdb.com/api.php?amount=10");
       const data = await response.json();
-      setQuestions((prevQuestions) => [
-        ...prevQuestions,
-        ...(data.results ?? []),
-      ]);
+
+      setQuestions(data.results ?? []);
     };
+
     fetchData();
-  }, [numberOfQuestions]);
+  }, []);
+
+  const loadMore = async () => {
+    const response = await fetch("https://opentdb.com/api.php?amount=10");
+    const data = await response.json();
+
+    setQuestions((prevQuestions) => [
+      ...prevQuestions,
+      ...(data.results ?? []),
+    ]);
+  };
 
   const handleAnswers = (questionIndex: number, answer: string) => {
     setAnswers((prevAnswers) => {
@@ -61,10 +68,7 @@ const QuizApp = () => {
       </div>
 
       <div className="load-more-container">
-        <button
-          className="load-more-button"
-          onClick={() => setNumberOfQuestions((s) => s + 10)}
-        >
+        <button className="load-more-button" onClick={loadMore}>
           Load More Questions →
         </button>
       </div>
